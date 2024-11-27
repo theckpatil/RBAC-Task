@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBAC Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>Role - Based Access Control Dashboard</header>
+    <div class="container-fluid">
+        <div class="row">
+            
+            <!-- Sidebar -->
+            <nav class="col-md-2 text-white p-3  custom-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-white" onclick="showSection('users')">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-white" onclick="showSection('roles')">Roles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-white"
+                            onclick="showSection('permissions-table')">Permissions</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 p-4">
+                <div id="users" class="content-section c-section">
+                   <div class="head"> 
+                    <h3>User Management</h3>
+                    <button class="btn btn-primary mb-3" onclick="openAddUserModal()">Add User</button>
+                </div>
+                    <table class="table table-striped table-new ">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="roles" class="content-section d-none c-section">
+                    <div class="head">
+                    <h3>Role Management</h3>
+                    <button class="btn btn-primary mb-3" onclick="openAddRoleModal()">Add Role</button>
+                </div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Role Name</th>
+                                <th>Permissions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="role-table">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="permissions-table" class="content-section d-none c-section">
+                    
+                    <div class="head"><h3>Permissions Management</h3></div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th>Read</th>
+                                <th>Write</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="permissions-table">
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+
+        <!-- Add User Modal -->
+        <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addUserLabel">Add User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addUserForm">
+                            <div class="mb-3">
+                                <label for="userName" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="userName">
+                            </div>
+                            <div class="mb-3">
+                                <label for="userEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="userEmail">
+                            </div>
+                            <div class="mb-3">
+                                <label for="userRole" class="form-label">Role</label>
+                                <select class="form-select" id="userRole">
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="userStatus" class="form-label">Status</label>
+                                <select class="form-select" id="userStatus">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success">Add User</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Role Modal -->
+        <div class="modal fade" id="addRoleModal" tabindex="-1" aria-labelledby="addRoleLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addRoleLabel">Add Role</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addRoleForm">
+                            <div class="mb-3">
+                                <label for="roleName" class="form-label">Role Name</label>
+                                <input type="text" class="form-control" id="roleName">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Permissions</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Read" id="permissionRead">
+                                    <label class="form-check-label" for="permissionRead">Read</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Write" id="permissionWrite">
+                                    <label class="form-check-label" for="permissionWrite">Write</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Delete"
+                                        id="permissionDelete">
+                                    <label class="form-check-label" for="permissionDelete">Delete</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">Add Role</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit User Modal -->
+        <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editUserLabel">Edit User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editUserForm">
+                            <div class="mb-3">
+                                <label for="editUserName" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="editUserName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editUserEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="editUserEmail" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editUserRole" class="form-label">Role</label>
+                                <select class="form-select" id="editUserRole">
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editUserStatus" class="form-label">Status</label>
+                                <select class="form-select" id="editUserStatus">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                            <input type="hidden" id="editUserId">
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Role Modal -->
+        <div class="modal fade" id="editRoleModal" tabindex="-1" aria-labelledby="editRoleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="editRoleForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editRoleModalLabel">Edit Role</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="editRoleName" class="form-label">Role Name</label>
+                                <input type="text" class="form-control" id="editRoleName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Permissions</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editPermissionRead">
+                                    <label class="form-check-label" for="editPermissionRead">Read</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editPermissionWrite">
+                                    <label class="form-check-label" for="editPermissionWrite">Write</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editPermissionDelete">
+                                    <label class="form-check-label" for="editPermissionDelete">Delete</label>
+                                </div>
+                            </div>
+                            <input type="hidden" id="editRoleId">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="errorMessage"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
